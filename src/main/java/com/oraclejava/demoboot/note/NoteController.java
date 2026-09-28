@@ -39,7 +39,7 @@ public class NoteController {
 	public ResponseEntity<Note> create(@RequestBody NoteRequest request) {
 		validate(request);
 		Note note = noteService.create(request);
-		return ResponseEntity.created(URI.create("/notes/" + note.id())).body(note);
+		return ResponseEntity.created(URI.create("/notes/" + note.getId())).body(note);
 	}
 
 	@PutMapping("/{id}")
