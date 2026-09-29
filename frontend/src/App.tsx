@@ -121,7 +121,7 @@ function App() {
 
   return (
     <section id="center">
-      <h1>Notes</h1>
+      <h1>Notes2</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <input

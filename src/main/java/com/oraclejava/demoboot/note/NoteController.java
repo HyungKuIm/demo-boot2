@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/notes")
+@RequestMapping("/api/notes")
 public class NoteController {
 
 	private final NoteService noteService;
@@ -39,7 +39,7 @@ public class NoteController {
 	public ResponseEntity<Note> create(@RequestBody NoteRequest request) {
 		validate(request);
 		Note note = noteService.create(request);
-		return ResponseEntity.created(URI.create("/notes/" + note.getId())).body(note);
+		return ResponseEntity.created(URI.create("/api/notes/" + note.getId())).body(note);
 	}
 
 	@PutMapping("/{id}")

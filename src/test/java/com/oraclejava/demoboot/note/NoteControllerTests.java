@@ -32,7 +32,7 @@ class NoteControllerTests {
 
 	@Test
 	void crudFlow() throws Exception {
-		String location = mockMvc.perform(post("/notes")
+		String location = mockMvc.perform(post("/api/notes")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content("{\"title\":\"first\",\"content\":\"hello\"}"))
 				.andExpect(status().isCreated())
@@ -50,7 +50,7 @@ class NoteControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.title").value("updated"));
 
-		mockMvc.perform(get("/notes"))
+		mockMvc.perform(get("/api/notes"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$[?(@.title == 'updated')]").exists());
 
@@ -63,7 +63,7 @@ class NoteControllerTests {
 
 	@Test
 	void blankTitleIsRejected() throws Exception {
-		mockMvc.perform(post("/notes")
+		mockMvc.perform(post("/api/notes")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content("{\"title\":\" \",\"content\":\"x\"}"))
 				.andExpect(status().isBadRequest());
@@ -71,11 +71,11 @@ class NoteControllerTests {
 
 	@Test
 	void missingNoteReturns404() throws Exception {
-		mockMvc.perform(put("/notes/9999")
+		mockMvc.perform(put("/api/notes/9999")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content("{\"title\":\"t\",\"content\":\"c\"}"))
 				.andExpect(status().isNotFound());
-		mockMvc.perform(delete("/notes/9999"))
+		mockMvc.perform(delete("/api/notes/9999"))
 				.andExpect(status().isNotFound());
 	}
 

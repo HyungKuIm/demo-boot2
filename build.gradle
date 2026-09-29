@@ -30,3 +30,38 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Frontend (frontend/) build: npm install -> npm run build -> copy dist into static/
+def frontendDir = file('frontend')
+def npm = System.getProperty('os.name').toLowerCase().contains('windows') ? 'npm.cmd' : 'npm'
+
+tasks.register('npmInstall', Exec) {
+	group = 'frontend'
+	description = 'Installs frontend dependencies.'
+	workingDir = frontendDir
+	commandLine npm, 'install'
+	inputs.files('frontend/package.json', 'frontend/package-lock.json')
+	outputs.dir('frontend/node_modules')
+}
+
+tasks.register('npmBuild', Exec) {
+	group = 'frontend'
+	description = 'Builds the frontend into frontend/dist.'
+	dependsOn 'npmInstall'
+	workingDir = frontendDir
+	commandLine npm, 'run', 'build'
+	inputs.dir('frontend/src')
+	inputs.dir('frontend/public')
+	inputs.files('frontend/index.html', 'frontend/package.json', 'frontend/package-lock.json',
+			'frontend/vite.config.ts', 'frontend/tsconfig.json', 'frontend/tsconfig.app.json', 'frontend/tsconfig.node.json')
+	outputs.dir('frontend/dist')
+}
+
+tasks.named('processResources', ProcessResources) {
+	// Skip with -PskipFrontend (e.g. when only working on the backend)
+	if (!project.hasProperty('skipFrontend')) {
+		from(tasks.named('npmBuild')) {
+			into 'static'
+		}
+	}
+}
